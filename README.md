@@ -19,7 +19,7 @@ Our project also contains a `One to Many` relationship between two entities - `C
 When you create an Xcode project using SwiftUI and CoreData, Xcode generates a `PersistenceController` class which is a singleton. This singleton will help us access `ViewContext` across various ViewModel files. This is how the `PersistenceController` file will look like:
 
 
-```
+```swift
 import CoreData
 
 struct PersistenceController {
@@ -51,7 +51,7 @@ Next head over to the CoreData data model file and add an entity and attributes.
 <h3>View Models</h3>
 So, now that our CoreData model files have been generated and set up. Now its time to create the ViewModels. Probably the most important part of this whole architecture. Let's start with `CompanyViewModel`. 
 
-```
+```swift
 import Foundation
 import CoreData
 
@@ -101,7 +101,7 @@ Similarly, we can add data to the db using the `addDataToCoreData(companyTitle: 
 
 This one is interesting, since this is connected to the company entity. So, we need access to the Company entity. Here is how we can implement such a ViewModel: 
 
-```
+```swift
 class EmployeesViewModel: ObservableObject {
     private let viewContext = PersistenceController.shared.viewContext
     @Published var employeesArray = [Employee]()
@@ -139,7 +139,7 @@ class EmployeesViewModel: ObservableObject {
 
 Before, explaining the above code let's tweak the NSManagedObject files the Xcode generated for us. Since, there is one to many relationship between `Company` and `Employee`, the company model contains an `NSSet` of type `Employee` called `Employees`. We will convert this to an array so that we can use it with SwiftUI easily: 
 
-```
+```swift
 extension Company {
 
     @nonobjc public class func fetchRequest() -> NSFetchRequest<Company> {
@@ -165,7 +165,7 @@ Here we are creating a computed property of `employeesArray` that returns the `N
 
 Now, let's move our attention the `Views`. I will discuss `EmployeesView` since it requires DI to be able to initialize the `EmployeesViewModel`. On tapping the company item in the list, we will navigate to the `EmployeesView`. However, the view model for this view requires company entity so we will initialize this view like this:
 
-```
+```swift
 struct EmployeesView: View {
     @ObservedObject var viewModel : EmployeesViewModel
     @State var employeeName: String = ""
